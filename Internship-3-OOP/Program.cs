@@ -24,6 +24,10 @@ class Program
         Menu.WriteMenu(mainMenu);
         bool exit = false;
         var passangerService = new PassangerService();
+        var passanger = new Passanger("ante", "antic", new DateTime(1111, 11, 11),
+            "M", "anteantic@gmail.com", "");
+        passanger.GeneratePasswordHardCoded("anteantic123!");
+        passangerService.passangers.Add(passanger);
         string input = CheckInput.CheckMenuInput();
         while (!exit)
         {

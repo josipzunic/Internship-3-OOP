@@ -19,8 +19,39 @@ public class CheckInput
             else return input;
         } while (true);
     }
+    
+    private static string WritePasswordToConsole()
+    {
+        string password = "";
+        ConsoleKeyInfo key;
 
-    public static string checkPassword()
+        do
+        {
+            key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Enter)
+                break;
+
+            if (key.Key == ConsoleKey.Backspace)
+            {
+                if (password.Length > 0)
+                {
+                    password = password[0..^1];
+                    Console.Write("\b \b");
+                }
+            }
+            else
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+
+        } while (true);
+        Console.WriteLine();
+        return password;
+    }
+
+    public static string checkPasswordCreation()
     {
         List<char> specialSymbols = new List<char>
         {
@@ -39,7 +70,7 @@ public class CheckInput
         do
         {
             Console.Write("Postavite lozinku: ");
-            password = Passanger.WritePasswordToConsole();
+            password = WritePasswordToConsole();
             if (string.IsNullOrEmpty(password))
                 Console.WriteLine("Ovo polje ne može biti prazno");
             else if (password.Length < 8)
@@ -48,13 +79,15 @@ public class CheckInput
                 Console.WriteLine("Lozinka mora sadržavati barem jedan od specijalnih simbola, npr. @, !, ?");
             else if (!password.Any(digit => digits.Contains(digit)))
                 Console.WriteLine("Lozinka mora sadržavati barem jednu znamenku");
+            else if (password.Contains(' '))
+                Console.WriteLine("Lozinka ne smije sadržavati razmake");
             else break;
         } while (true);
 
         do
         {
             Console.Write("Ponovite lozinku: ");
-            repeatPassword = Passanger.WritePasswordToConsole();
+            repeatPassword = WritePasswordToConsole();
             if (repeatPassword != password)
                 Console.WriteLine("Lozinke se ne podudaraju. Probajte ponovo");
             else break;
@@ -62,7 +95,7 @@ public class CheckInput
         
         return password;
     }
-
+    
     public static string CheckGeneralInput(string message)
     {
         do
@@ -94,7 +127,7 @@ public class CheckInput
         } while (true);
     }
 
-    public static string checkEMail(string message)
+    public static string checkEMail()
     {
         List<string> allowedDomains = new List<string>
         {
@@ -104,7 +137,7 @@ public class CheckInput
         do
         {
             //provjerit postoji li user vec s tim mailom
-            Console.Write(message);
+            Console.Write("Unesite email: ");
             string input = Console.ReadLine().Trim();
             var inputSplit = input.Split('@');
             if(string.IsNullOrEmpty(input))
@@ -129,5 +162,12 @@ public class CheckInput
                 Console.WriteLine("Unesite spol odabirom slova M ili F");
             else return input;
         } while (true);
+    }
+
+    public static string checkPasswordInput()
+    {
+        Console.Write("Unesite lozinku: ");
+        string password = WritePasswordToConsole();
+        return password;
     }
 }

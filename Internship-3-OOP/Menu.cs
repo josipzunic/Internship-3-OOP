@@ -36,6 +36,11 @@ public class Menu
                 passangerService.generatePassanger();
                 break;
             }
+            case "2":
+            {
+                passangerService.userLogIn();
+                break;
+            }
             case "3":
             {
                 input = "6";
