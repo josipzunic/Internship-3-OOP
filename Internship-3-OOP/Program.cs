@@ -5,8 +5,53 @@ class Program
 {
     static void Main(string[] args)
     {
-        Menu menu = new Menu();
-        menu.WriteMainMenu();
+        var mainMenu = new List<Menu>
+        {
+            new Menu("Putnici"),
+            new Menu("Letovi"),
+            new Menu("Avioni"),
+            new Menu("Posada"),
+            new Menu("Izlaz iz programa")
+        };
+
+        var usersMenu = new List<Menu>
+        {
+            new Menu("Registracija"),
+            new Menu("Prijava"),
+            new Menu("Povratak"),
+        };
+
+        Menu.WriteMenu(mainMenu);
+        bool exit = false;
+        var passangerService = new PassangerService();
+        string input = CheckInput.CheckMenuInput();
+        while (!exit)
+        {
+            switch (input)
+            {
+                case "1":
+                {
+                    Console.Clear();
+                    Menu.WriteMenu(usersMenu);
+                    string choice = CheckInput.CheckMenuInput();
+                    Menu.UsersMenuFunctionality(choice, passangerService, ref input);
+                    break;
+                }
+                case "5":
+                {
+                    exit = true;
+                    break;
+                }
+                case "6":
+                {
+                    Console.Clear();
+                    Menu.WriteMenu(mainMenu);
+                    input = CheckInput.CheckMenuInput();
+                    break;
+                }
+            }
+        }
+
 
     }
 }
