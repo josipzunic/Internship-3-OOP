@@ -26,24 +26,71 @@ public class Menu
         Console.ReadKey();
     }
 
-
-    public static void UsersMenuFunctionality(string choice, PassangerService passangerService, ref string input)
+    private static void onSuccesfullLogin(Passanger user, List<Menu> usersFlightMenu, PassangerService passangerService)
+    {
+        if (user != null)
+        {
+            Console.Clear();
+            Console.WriteLine($"Trenutni korisnik:  {user.name} {user.surname}");
+            WriteMenu(usersFlightMenu);
+            string choice = CheckInput.CheckMenuInput();
+            UsersFlightMenuFunctionality(choice, passangerService, user);
+        }
+        
+    }
+    
+    public static void UsersMenuFunctionality(string choice, PassangerService passangerService, ref string input,
+        List<Menu> usersFlightMenu)
     {
         switch (choice)
         {
             case "1":
             {
-                passangerService.generatePassanger();
+                passangerService.generatePassanger(passangerService);
                 break;
             }
             case "2":
             {
-                passangerService.userLogIn();
+                var user = passangerService.userLogIn(passangerService);
+                onSuccesfullLogin(user, usersFlightMenu, passangerService);
                 break;
             }
             case "3":
             {
                 input = "6";
+                break;
+            }
+        }
+    }
+
+    private static void UsersFlightMenuFunctionality(string choice, PassangerService passangerService, Passanger passanger)
+    {
+        switch (choice)
+        {
+            case "1":
+            {
+                //prikaz svih letova
+                passangerService.listOfUsersFlights(passanger);
+                waitOnKeyPress();
+                break;
+            }
+            case "2":
+            {
+                //odabir leta
+                break;
+            }
+            case "3":
+            {
+                //Pretraživanje letova
+                break;
+            }
+            case "4":
+            {
+                //otkazivanje leta“
+                break;
+            }
+            case "5":
+            {
                 break;
             }
         }

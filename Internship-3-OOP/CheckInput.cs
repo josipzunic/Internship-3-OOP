@@ -126,8 +126,25 @@ public class CheckInput
             else return dateTime;
         } while (true);
     }
+    
+    public static DateTime checkDateOfDepartureAndArrival(string message)
+    {
+        var currentDate = DateTime.Now;
+        do
+        {
+            Console.WriteLine($"Unesite datum {message}: ");
+            string input = Console.ReadLine();
+            var dateTimeValidity = DateTime.TryParse(input, out DateTime date);
+            if (string.IsNullOrEmpty(input)) Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if (!dateTimeValidity)
+                Console.WriteLine("Datum nije valjan. Unesite datum u formatu yyyy-mm-dd");
+            else if (currentDate.CompareTo(date) < 0)
+                Console.WriteLine($"Datum {message} ne može biti u prošlosti");
+            else return date;
+        } while (true);
+    }
 
-    public static string checkEMail()
+    public static string checkEMail(PassangerService passangerService, string registationOrLogin)
     {
         List<string> allowedDomains = new List<string>
         {
@@ -146,6 +163,8 @@ public class CheckInput
                 Console.WriteLine("Niste unijeli pravilnu adresu");
             else if(!allowedDomains.Contains(inputSplit[1]))
                 Console.WriteLine("Nedozvoljena domena");
+            else if(passangerService.userExistance(input) && registationOrLogin == "registration")
+                Console.WriteLine("Korisnik s unesenom adresom već postoji");
             else return input;
         } while (true);
     }
