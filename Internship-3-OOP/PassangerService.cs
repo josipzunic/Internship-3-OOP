@@ -21,7 +21,7 @@ public class PassangerService
         DateTime dateOfBirth = CheckInput.checkDate("Unesite datum rođenja: ");
         string email = CheckInput.checkEMail(passangerService, "registration");
         string gender = CheckInput.checkSexInput();
-        var passanger = new Passanger(name, surname, dateOfBirth, email, gender, passwordMethod, new List<Flight>());
+        var passanger = new Passanger(name, surname, dateOfBirth, gender, email, passwordMethod, new List<Flight>());
     
         Console.WriteLine($"Korisnik {name} {surname} uspješno dodan");
         passangers.Add(passanger);
@@ -36,6 +36,7 @@ public class PassangerService
         Console.WriteLine("Forma za prijavu korisnika");
         string email = CheckInput.checkEMail(passangerService, "login");
         string password = CheckInput.checkPasswordInput();
+        bool login = false;
         
         foreach (var passanger in passangers)
         {
@@ -43,12 +44,14 @@ public class PassangerService
             {
                 user = passanger;
                 user.availableFlights = new List<Flight>(flights);
-            }
-            else
-            {
-                Console.WriteLine("Netočna lozinka ili email. Odaberite Prijavu na izborniku za novi pokušaj.");
                 Menu.waitOnKeyPress();
+                login = true;
             }
+        }
+        if(!login)
+        {
+            Console.WriteLine("Netočna lozinka ili email. Odaberite Prijavu na izborniku za novi pokušaj.");
+            Menu.waitOnKeyPress();
         }
         return user;
     }

@@ -19,7 +19,7 @@ public class Passanger : AirportPersonnel
         id = _idCounter;
         this.email = email;
         this.flights = flights;
-        if (passwordMethod == "hardCodedPassword") GeneratePasswordByInput();
+        if (passwordMethod == "input") GeneratePasswordByInput();
         availableFlights = new List<Flight>();
         _idCounter++;
     }
