@@ -31,7 +31,7 @@ public class Menu
         string input;
         do
         {
-            Console.Write($"Želite li stvarno {action} ovaj let ili  (da/ne): ");
+            Console.Write($"Želite li stvarno {action} ovaj let ili avion (da/ne): ");
             input =  Console.ReadLine();
             if(input == "da" || input == "ne") return  input;
             else Console.WriteLine("Molim unesite da ili ne");
@@ -202,12 +202,14 @@ public class Menu
                 }
                 case "3":
                 {
-                    
+                    passangerService.ListOfPlanesFiltered(passangerService.planes);
+                    waitOnKeyPress();
                     break;
                 }
                 case "4":
                 {
-                    
+                    passangerService.DeletePlane(passangerService.planes);
+                    waitOnKeyPress();
                     break;
                 }
                 case "5":

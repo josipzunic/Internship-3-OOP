@@ -88,6 +88,21 @@ public class PassangerService
         return ids;
     }
     
+    public List<int> fetchPlaneIds(List<Plane> planeList)
+    {
+        var ids = new List<int>();
+        foreach (var plane in planeList) ids.Add(plane.id);
+        return ids;
+    }
+    
+    public List<string> FetchPlaneNames(List<Plane> planeList)
+    {
+        var names = new List<string>();
+        foreach (var plane in planeList) names.Add(plane.name);
+        return names;
+    }
+
+    
     public void ChooseFlight(Passanger passanger)
     {
         var ids = fetchFlightIds(flights);
@@ -139,6 +154,39 @@ public class PassangerService
                 {
                     matchingFlightList.Add(targetFlight);
                     ListOfFlights(writeGeneralFlights, matchingFlightList);
+                }
+            
+        }
+    }
+    
+    public void ListOfPlanesFiltered(List<Plane> planesList)
+    {
+        Console.WriteLine("1 - id\n" +
+                          "2 - ime\n" +
+                          "3 - povratak");
+        string condition = CheckInput.CheckMenuInput(3);
+        var matchingPlaneList = new List<Plane>();
+        
+        if (condition == "1" && planesList.Count!= 0)
+        {
+            int id = CheckInput.CheckPlaneIdExistance(planesList);
+            Plane targetPlane = planesList.Find(flight => flight.id == id);
+            if (targetPlane != null)
+            {
+                matchingPlaneList.Add(targetPlane);
+                listAllPlanes(matchingPlaneList);
+            }
+            
+        }
+        else if (condition == "2" && planesList.Count != 0)
+        {
+            string name = CheckInput.CheckPlaneNameExistance(planesList);
+            var targetFlights = planesList.FindAll(flight => flight.name == name);
+            foreach (var targetFlight in targetFlights)
+                if (targetFlight != null)
+                {
+                    matchingPlaneList.Add(targetFlight);
+                    listAllPlanes(matchingPlaneList);
                 }
             
         }
@@ -323,6 +371,54 @@ public class PassangerService
         else if (confirmation == negation)
             Console.WriteLine("Prekidanje akcije. Povratak na meni s opcijama");
     }
-    
-    public void 
+
+    public void DeletePlane(List<Plane> planeList)
+    {
+        Console.WriteLine("1 - id\n" +
+                          "2 - ime\n" +
+                          "3 - povratak");
+        string condition = CheckInput.CheckMenuInput(3);
+        if (condition == "1")
+        {
+            var ids = fetchPlaneIds(planeList);
+            var id = CheckInput.CheckIds(ids);
+            
+            var targetPlane =  planeList.Find(plane => plane.id == id);
+            var confirmation = Menu.confirmationMessage("izbrisati");
+            if (targetPlane != null && confirmation == affirmation)
+            {
+               planeList.Remove(targetPlane);
+               Console.WriteLine("Avion je uspješno izbrisan");
+            }
+            else if (confirmation == negation && targetPlane != null)
+                Console.WriteLine("Otkazivanje akcije. Povratak na izbornik");
+        }
+        else if (condition == "2")
+        {
+            var name = CheckInput.CheckPlaneNameExistance(planeList);
+            
+            var sameNamePlanes = planeList.FindAll(plane => plane.name == name);
+            if (sameNamePlanes.Count > 1 && sameNamePlanes != null)
+                Console.WriteLine($"Postoji/e {sameNamePlanes.Count} aviona s ovim imenom");
+            if (sameNamePlanes.Count != 0)
+            {
+                var confirmation = Menu.confirmationMessage("izbrisati");
+                if (confirmation == affirmation)
+                {
+                    foreach (var plane in sameNamePlanes)
+                    {
+                        planeList.Remove(plane);
+                    }
+
+                    Console.WriteLine("Avion je uspješno izbrisan");
+                }
+                else if (confirmation == negation)
+                    Console.WriteLine("Prekidanje akcije. Povratak na izbornik\n" +
+                                      "Ako želite izbrisati samo jedan od aviona ponavljajućeg imena, odaberite" +
+                                      "brisanje po id-u");
+                
+            }
+            
+        }
+    }
 }

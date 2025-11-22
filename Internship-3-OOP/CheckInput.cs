@@ -214,6 +214,28 @@ public class CheckInput
             else return id;
         } while (true);
     }
+    
+    public static int CheckPlaneIdExistance(List<Plane> listOfPlanes)
+    {
+        int id = -1;
+        do
+        {
+            Console.Write("Unesite id aviona (Upisati povratak za izlaz): ");
+            string input = Console.ReadLine().Trim();
+            if (string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if (input == "povratak")
+                return id;
+            else if(!int.TryParse(input, out  id))
+                Console.WriteLine("Id mora biti broj");
+            else if (!listOfPlanes.Any(flight => flight.id == id))
+            {
+                Console.WriteLine("Avion s unesenim id-om ne postoji");
+                Menu.waitOnKeyPress();
+            }
+            else return id;
+        } while (true);
+    }
 
     public static string checkFlightNameExistance(List<Flight> listOfFlights)
     {
@@ -235,6 +257,28 @@ public class CheckInput
            }
            
            else return name; 
+        } while (true);
+        
+    }
+    
+    public static string CheckPlaneNameExistance(List<Plane> listOfPlanes)
+    {
+        string name = "";
+        do
+        {
+            Console.Write("Unesite ime aviona (Upisati povratak za izlaz): ");
+            name =  Console.ReadLine().Trim();
+            if(string.IsNullOrEmpty(name))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if (name == "povratak")
+                return name;
+            else if (!listOfPlanes.Any(flight => flight.name == name))
+            {
+                Console.WriteLine("Avion s unesenim imenom ne postoji");
+                Menu.waitOnKeyPress();
+            }
+           
+            else return name; 
         } while (true);
         
     }
