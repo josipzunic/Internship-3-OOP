@@ -14,3 +14,10 @@ public enum CabinType
     firstClass,
     business,
 }
+
+public enum EditFlight
+{
+    dateOfArrival,
+    dateOfDeparture,
+    crew
+}

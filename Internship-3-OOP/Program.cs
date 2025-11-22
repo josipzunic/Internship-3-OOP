@@ -30,6 +30,25 @@ class Program
             new Menu("Odjava")
         };
 
+        var flightMenu = new List<Menu>()
+        {
+            new Menu("Prikaz svih letova"),
+            new Menu("Dodavanje leta"),
+            new Menu("Pretraživanje letova"),
+            new Menu("Uređivanje leta"),
+            new Menu("Brisanje leta"),
+            new Menu("Povratak"),
+        };
+
+        var planeMenu = new List<Menu>()
+        {
+            new Menu("Prikaz svih aviona"),
+            new Menu("Dodavanje novog aviona"),
+            new Menu("Pretraživanje aviona"),
+            new Menu("Brisanje aviona"),
+            new Menu("Povratak"),
+        };
+
         Menu.WriteMenu(mainMenu);
         bool exit = false;
         var passangerService = new PassangerService();
@@ -44,15 +63,18 @@ class Program
             "F",   Positions.stjuardesa.ToString());
         
         var crew = new List<Crew>{pilot,  copilot, flightAttendant1, flightAttendant2};
+        var plane = new Plane("Boeing-747", new DateTime(2012, 12, 25), 10, 
+            10, 10);
 
         
         var flight = new Flight("floptropica", 
             new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0),
-            1234, "hardCoded", crew);
+            1234, "hardCoded", crew, plane);
         flight.SetTimeOfFlightInCode(new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0));
         passangerService.flights.Add(flight);
+        passangerService.planes.Add(plane);
         
         
         var passanger = new Passanger("ante", "antic", new DateTime(1111, 11, 11),
@@ -71,6 +93,22 @@ class Program
                     Menu.WriteMenu(usersMenu);
                     string choice = CheckInput.CheckMenuInput(usersMenu.Count);
                     Menu.UsersMenuFunctionality(choice, passangerService, ref input,  usersFlightMenu);
+                    break;
+                }
+                case "2":
+                {
+                    Console.Clear();
+                    Menu.WriteMenu(flightMenu);
+                    string  choice = CheckInput.CheckMenuInput(flightMenu.Count);
+                    Menu.FlightMenuFunctionality(choice, passangerService, ref input, flightMenu);
+                    break;
+                }
+                case "3":
+                {
+                    Console.Clear();
+                    Menu.WriteMenu(planeMenu);
+                    string choice = CheckInput.CheckMenuInput(planeMenu.Count);
+                    Menu.PlaneMenuFunctionality(choice, passangerService, ref input, planeMenu);
                     break;
                 }
                 case "5":

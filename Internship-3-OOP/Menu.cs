@@ -86,20 +86,20 @@ public class Menu
             {
                 case "1":
                 {
-                    passangerService.ListOfFlights(passanger, PassangerService.writeUserFlights, passanger.flights);
+                    passangerService.ListOfFlights(PassangerService.writeUserFlights, passanger.flights);
                     waitOnKeyPress();
                     break;
                 }
                 case "2":
                 {
-                    passangerService.ListOfFlights(passanger, PassangerService.writeGeneralFlights, passanger.availableFlights);
+                    passangerService.ListOfFlights(PassangerService.writeGeneralFlights, passanger.availableFlights);
                     passangerService.ChooseFlight(passanger);
                     waitOnKeyPress();
                     break;
                 }
                 case "3":
                 {
-                    passangerService.FilterFlights(passanger, passangerService);
+                    passangerService.FilterFlights(passanger.flights);
                     waitOnKeyPress();
                     break;
                 }
@@ -124,8 +124,107 @@ public class Menu
                 choice = CheckInput.CheckMenuInput(5);
             }
         }
-        
-            
+    }
+
+    public static void FlightMenuFunctionality(string choice, PassangerService passangerService, ref string input, 
+        List<Menu> flightMenu)
+    {
+        bool exit = false;
+        while (!exit)
+        {
+            switch (choice)
+            {
+                case "1":
+                {
+                    passangerService.ListOfFlights(PassangerService.writeGeneralFlights, 
+                        passangerService.flights);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "2":
+                {
+                    passangerService.AddFlight();
+                    waitOnKeyPress();
+                    break;
+                }
+                case "3":
+                {
+                    passangerService.FilterFlights(passangerService.flights);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "4":
+                {
+                    passangerService.EditFlight(passangerService.flights);
+                    break;
+                }
+                case "5":
+                {
+                    passangerService.DeleteFlight(passangerService.flights);
+                    break;
+                }
+                case "6":
+                {
+                    exit = true;
+                    input = "6";
+                    break;
+                }
+                    
+            }
+            if (!exit)
+            {
+                Console.Clear();
+                WriteMenu(flightMenu);
+                choice = CheckInput.CheckMenuInput(6);
+            }
+        }
+    }
+
+    public static void PlaneMenuFunctionality(string choice, PassangerService passangerService, ref string input,
+        List<Menu> planeMenu)
+    {
+        bool exit = false;
+        while (!exit)
+        {
+            switch (choice)
+            {
+                case "1":
+                {
+                    passangerService.listAllPlanes(passangerService.planes);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "2":
+                {
+                    passangerService.AddPlane();
+                    waitOnKeyPress();
+                    break;
+                }
+                case "3":
+                {
+                    
+                    break;
+                }
+                case "4":
+                {
+                    
+                    break;
+                }
+                case "5":
+                {
+                    exit = true;
+                    input = "6";
+                    break;
+                }
+                
+            }
+            if (!exit)
+            {
+                Console.Clear();
+                WriteMenu(planeMenu);
+                choice = CheckInput.CheckMenuInput(5);
+            }
+        }
     }
         
 }

@@ -2,7 +2,7 @@ namespace Internship_3_OOP;
 
 public class Flight
 {
-    private int _idCounter = 1;
+    private static int _idCounter = 1;
     public TimeSpan timeOfFlight;
     public int id { get; private set; }
     public string name { get; set; }
@@ -10,24 +10,24 @@ public class Flight
     public DateTime dateOfArrival { get; set; }
     public double mileage { get; set; }
     public List<Crew> crew { get; set; }
+    public Plane plane { get; set; }
     
     public Flight(string name, DateTime dateOfDeparture, DateTime dateOfArrival, double mileage, string setTimeOfFlightMethod,
-        List<Crew> crew)
+        List<Crew> crew, Plane plane)
     {
         id = _idCounter;
         this.name = name;
         this.dateOfDeparture = dateOfDeparture;
         this.dateOfArrival = dateOfArrival;
         this.mileage = mileage;
-        if (setTimeOfFlightMethod == "input") timeOfFlight = GetTimeOfFlight();
+        if (setTimeOfFlightMethod == "input") timeOfFlight = GetTimeOfFlight(dateOfDeparture, dateOfArrival);
         this.crew = crew;
+        this.plane = plane;
         _idCounter++;
     }
 
-    public TimeSpan GetTimeOfFlight()
+    public TimeSpan GetTimeOfFlight(DateTime dateOfDeparture, DateTime dateOfArrival)
     {
-        DateTime dateOfDeparture = CheckInput.checkDateOfDepartureAndArrival("polaska");
-        DateTime dateOfArrival = CheckInput.checkDateOfDepartureAndArrival("odlaska");
         
         TimeSpan timeSpan =  dateOfArrival - dateOfDeparture;
         

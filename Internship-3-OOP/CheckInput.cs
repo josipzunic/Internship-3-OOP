@@ -134,13 +134,13 @@ public class CheckInput
         var currentDate = DateTime.Now;
         do
         {
-            Console.WriteLine($"Unesite datum {message}: ");
+            Console.Write($"Unesite datum {message}: ");
             string input = Console.ReadLine();
             var dateTimeValidity = DateTime.TryParse(input, out DateTime date);
             if (string.IsNullOrEmpty(input)) Console.WriteLine("Ovo polje ne smije biti prazno");
             else if (!dateTimeValidity)
                 Console.WriteLine("Datum nije valjan. Unesite datum u formatu yyyy-mm-dd");
-            else if (currentDate.CompareTo(date) < 0)
+            else if (currentDate.CompareTo(date) > 0)
                 Console.WriteLine($"Datum {message} ne može biti u prošlosti");
             else return date;
         } while (true);
@@ -155,7 +155,6 @@ public class CheckInput
         };
         do
         {
-            //provjerit postoji li user vec s tim mailom
             Console.Write("Unesite email: ");
             string input = Console.ReadLine().Trim();
             var inputSplit = input.Split('@');
@@ -273,8 +272,56 @@ public class CheckInput
            else if (input == "povratak")
                return "";
            else if(!Enum.TryParse(input, true, out CabinType result))
-               Console.WriteLine();
+               Console.WriteLine("Unesite jedan od ponuđenih podataka");
            else return input;
+        } while (true);
+    }
+
+    public static string CheckFlightOrPlaneName()
+    {
+        string input;
+        do
+        {
+            Console.Write("Unesite ime leta ili aviona:  ");
+            input = Console.ReadLine().Trim();
+            if(string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else return input;
+        } while (true);
+    }
+
+    public static double CheckGeneralNumber(string message)
+    {
+        string input;
+        do
+        {
+            Console.Write($"Unesite {message}: ");
+            input =  Console.ReadLine().Trim();
+            if(string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if(!double.TryParse(input, out double result))
+                Console.WriteLine("Očekivani unos je broj");
+            else  return result;
+        } while (true);
+    }
+    
+    public static string DataToChange()
+    {
+        string input;
+        do
+        {
+            Console.Write("Podaci koji se mogu izmijeniti: date of departure, date of arrival, crew\n" +
+                              "Odaberite podatak koji želite izmijeniti (Upišite povratak za izlaz): ");
+            input = Console.ReadLine().Trim();
+            input = input.Replace(" ", "");
+            if(string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if (input == "povratak")
+                return "";
+            else if(!Enum.TryParse(input, true, out EditFlight result))
+                Console.WriteLine("Unesite jedan od ponuđenih podataka");
+            else return result.ToString();
+            
         } while (true);
     }
 }

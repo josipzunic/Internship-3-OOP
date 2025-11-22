@@ -4,6 +4,7 @@ public class PassangerService
 {
     public List<Passanger> passangers = new();
     public List<Flight> flights = new();
+    public List<Plane> planes = new();
     public const string passwordMethod = "input";
     public const string writeGeneralFlights = "general";
     public const string writeUserFlights = "userSpecific";
@@ -64,20 +65,19 @@ public class PassangerService
         return userExists;
     }
 
-    public void ListOfFlights(Passanger passanger, string condition, List<Flight> flightList)
+    public void ListOfFlights(string condition, List<Flight> flightList)
     {
-        //Console.Clear();
         if (condition == writeUserFlights) 
-            Console.WriteLine($"Letovi korisnika {passanger.name} {passanger.surname}: ");
+            Console.WriteLine("Letovi korisnika: ");
         else if (condition == writeGeneralFlights) 
             Console.WriteLine("Svi dostupni letovi: ");
-        if(passanger.flights.Count == 0 && condition == writeUserFlights) 
+        if(flightList.Count == 0 && condition == writeUserFlights) 
             Console.WriteLine("Ovaj korisnik nema zakazanih letova");
         foreach (var flight in flightList)
         {
             Console.WriteLine($"{flight.id} - {flight.name} - {flight.dateOfDeparture.Date.ToString("yyyy-MM-dd-hh-mm")} - " +
                               $"{flight.dateOfArrival.ToString("yyyy-MM-dd-hh-mm")} - {flight.mileage} - " +
-                              $"{flight.timeOfFlight.ToString(@"hh\:mm\:ss")}");
+                              $"{flight.timeOfFlight.ToString(@"dd\:hh\:mm\:ss")}");
         }
     }
 
@@ -111,8 +111,7 @@ public class PassangerService
         passanger.availableFlights.Remove(flightToAdd);
     }
 
-    public void ListOfFlightsFiltered(List<Flight> flightList, Passanger passanger,
-        PassangerService passangerService)
+    public void ListOfFlightsFiltered(List<Flight> flightList)
     {
         Console.WriteLine("1 - id\n" +
                           "2 - ime\n" +
@@ -120,18 +119,18 @@ public class PassangerService
         string condition = CheckInput.CheckMenuInput(3);
         var matchingFlightList = new List<Flight>();
         
-        if (condition == "1" && passanger.flights.Count != 0)
+        if (condition == "1" && flightList.Count!= 0)
         {
             int id = CheckInput.checkFlightIdExistance(flightList);
             Flight targetFlight = flightList.Find(flight => flight.id == id);
             if (targetFlight != null)
             {
                 matchingFlightList.Add(targetFlight);
-                ListOfFlights(passanger, writeUserFlights, matchingFlightList);
+                ListOfFlights(writeGeneralFlights, matchingFlightList);
             }
             
         }
-        else if (condition == "2" && passanger.flights.Count != 0)
+        else if (condition == "2" && flightList.Count != 0)
         {
             string name = CheckInput.checkFlightNameExistance(flightList);
             var targetFlights = flightList.FindAll(flight => flight.name == name);
@@ -139,24 +138,24 @@ public class PassangerService
                 if (targetFlight != null)
                 {
                     matchingFlightList.Add(targetFlight);
-                    ListOfFlights(passanger, writeUserFlights, matchingFlightList);
+                    ListOfFlights(writeGeneralFlights, matchingFlightList);
                 }
             
         }
     }
 
-    public void FilterFlights(Passanger passanger, PassangerService passangerService)
+    public void FilterFlights(List<Flight> flightList)
     {
-        if (passanger.flights.Count != 0)
-            ListOfFlightsFiltered(passanger.flights, passanger, passangerService);
-        else Console.WriteLine("Korisnik nema nijedan zakazan let. Unesite let/letove prije nastavljanja");
+        if (flightList.Count != 0)
+            ListOfFlightsFiltered(flightList);
+        else Console.WriteLine("Ne postoji nijedan let. Unesite let/letove prije nastavljanja");
     }
 
     public void cancelFlight(List<Flight> flightList, Passanger passanger)
     {
         if (flightList.Count != 0)
         {
-            ListOfFlights(passanger, writeUserFlights, flightList);
+            ListOfFlights(writeUserFlights, flightList);
             var ids = fetchFlightIds(flightList);
             var id = CheckInput.CheckIds(ids);
             var timeNow = DateTime.Now;
@@ -190,4 +189,140 @@ public class PassangerService
         else
             Console.WriteLine("Korisnik nema nijedan zakazan let. Unesite let/letove prije nastavljanja");
     }
+
+    public void AddFlight()
+    {
+        string name = CheckInput.CheckFlightOrPlaneName();
+        DateTime dateOfDeparture;
+        DateTime dateOfArrival;
+        do
+        {
+            dateOfDeparture = CheckInput.checkDateOfDepartureAndArrival("polaska");
+            dateOfArrival =  CheckInput.checkDateOfDepartureAndArrival("dolaska");
+            if (dateOfArrival <= dateOfDeparture)
+                Console.WriteLine("Datum dolaska ne može biti prije datuma polaska");
+            else break;
+        } while (true);
+        
+        double mileage = CheckInput.CheckGeneralNumber("udaljenost");
+        
+        var flight = new Flight(name, dateOfDeparture, dateOfArrival, mileage, "input",new List<Crew>(),
+            planes[0]);
+        var confirmation = Menu.confirmationMessage("dodati");
+        if (confirmation == affirmation)
+        {
+            flights.Add(flight);
+            Console.WriteLine("Let uspješno dodan");
+        }
+        else if (confirmation == negation)
+        {
+            Console.WriteLine("Otkazivanje akcije. Povratak na meni s opcijama");
+        }
+    }
+    
+    public void EditFlight(List<Flight> flightList)
+    {
+        var ids = fetchFlightIds(flightList);
+        var id = CheckInput.CheckIds(ids);
+        var dataToChange = CheckInput.DataToChange();
+        DateTime newValue = new DateTime();
+        if (dataToChange == Internship_3_OOP.EditFlight.dateOfDeparture.ToString())
+            newValue = CheckInput.checkDateOfDepartureAndArrival("polaska");
+        else if (dataToChange == Internship_3_OOP.EditFlight.dateOfArrival.ToString()) 
+            newValue = CheckInput.checkDateOfDepartureAndArrival("dolaska");
+       // else if(dataToChange == "crew") s tim cu se nosit kad napravim crew
+        
+        
+        var confirmation = Menu.confirmationMessage("izmijeniti");
+        if (confirmation == affirmation)
+        {
+            var targetFlight = flightList.Find(flight => flight.id == id);
+            if (dataToChange == Internship_3_OOP.EditFlight.dateOfDeparture.ToString()) 
+                targetFlight.dateOfDeparture = newValue; //provjeri opet da nije polazak posli dolaska
+            else if (dataToChange == Internship_3_OOP.EditFlight.dateOfArrival.ToString())
+                targetFlight.dateOfArrival = newValue;
+            Console.WriteLine("Podatak uspješno izmijenjen");
+            Menu.waitOnKeyPress();
+        }
+        else if (confirmation == negation)
+        {
+            Console.WriteLine("Otkazivanje akcije. Povratak na meni s opcijama");
+            Menu.waitOnKeyPress();
+        }
+    }
+
+    public void DeleteFlight(List<Flight> flightList)
+    {
+        if (flightList.Count != 0)
+        {
+            ListOfFlights(writeUserFlights, flightList);
+            var ids = fetchFlightIds(flightList);
+            var id = CheckInput.CheckIds(ids);
+            var timeNow = DateTime.Now;
+            
+            var targetFlight = flightList.Find(flight => flight.id == id);
+            var dateOfDeparture = targetFlight.dateOfDeparture;
+            TimeSpan timeBetween = dateOfDeparture - timeNow;
+            
+            if (targetFlight != null && int.Abs(timeBetween.Days) > 1 && 
+                targetFlight.plane.currentCapacity > targetFlight.plane.capacity/2)
+            {
+                string confirmation = Menu.confirmationMessage("izbrisati");
+                if (confirmation == affirmation)
+                {
+                    flights.Remove(targetFlight);
+                    Console.WriteLine("Let uklonjen");
+                    Menu.waitOnKeyPress();
+                }
+                else if (confirmation == negation)
+                {
+                    Console.WriteLine("Otkazivanje akcije. Vraćanje na menu s opcijama");
+                    Menu.waitOnKeyPress();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Nije moguće otkazati let koji polijeće za manje od 24 sata");
+                Menu.waitOnKeyPress();
+            }
+        }
+        else
+            Console.WriteLine("Lista letova je prazna");
+    }
+
+    public void listAllPlanes(List<Plane> planes)
+    {
+        var listOfAppearances = new List<int>();
+        foreach (var plane in planes)
+        {
+            int numberOfFlights = flights.Where(flight => flight.plane.id == plane.id).Count();
+            listOfAppearances.Add(numberOfFlights);
+        }
+
+        for (int i = 0; i < planes.Count; i++)
+        {
+            Console.WriteLine($"{planes[i].id} - {planes[i].name} - {planes[i].manufacturingDate.ToString("yyyy-MM-dd")} - " +
+                              $"{listOfAppearances[i]}");
+        }
+    }
+
+    public void AddPlane()
+    {
+        string name = CheckInput.CheckFlightOrPlaneName();
+        DateTime manufacturingDate = CheckInput.checkDate("Unesite datum proizvodnje: ");
+        int firstClassSeats = (int)CheckInput.CheckGeneralNumber("broj first class sjedala");
+        int economySeats = (int)CheckInput.CheckGeneralNumber("broj economy sjedala");
+        int businessSeats = (int)CheckInput.CheckGeneralNumber("broj business sjedala");
+        var plane = new Plane(name,  manufacturingDate, firstClassSeats, economySeats, businessSeats);
+        var confirmation = Menu.confirmationMessage("dodati");
+        if (confirmation == affirmation)
+        {
+            planes.Add(plane);
+            Console.WriteLine("avion je uspješno dodan");
+        }
+        else if (confirmation == negation)
+            Console.WriteLine("Prekidanje akcije. Povratak na meni s opcijama");
+    }
+    
+    public void 
 }
