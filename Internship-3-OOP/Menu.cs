@@ -25,6 +25,19 @@ public class Menu
         Console.WriteLine("Pritisnite bilo koju tipku za nastavak");
         Console.ReadKey();
     }
+    
+    public static string confirmationMessage(string action)
+    {
+        string input;
+        do
+        {
+            Console.Write($"Želite li stvarno {action} ovaj let ili  (da/ne): ");
+            input =  Console.ReadLine();
+            if(input == "da" || input == "ne") return  input;
+            else Console.WriteLine("Molim unesite da ili ne");
+        } while (true);
+    
+    }
 
     private static void onSuccesfullLogin(Passanger user, List<Menu> usersFlightMenu, PassangerService passangerService)
     {
@@ -33,8 +46,8 @@ public class Menu
             Console.Clear();
             Console.WriteLine($"Trenutni korisnik:  {user.name} {user.surname}");
             WriteMenu(usersFlightMenu);
-            string choice = CheckInput.CheckMenuInput();
-            UsersFlightMenuFunctionality(choice, passangerService, user);
+            string choice = CheckInput.CheckMenuInput(usersFlightMenu.Count);
+            UsersFlightMenuFunctionality(choice, passangerService, user, usersFlightMenu);
         }
         
     }
@@ -63,36 +76,56 @@ public class Menu
         }
     }
 
-    private static void UsersFlightMenuFunctionality(string choice, PassangerService passangerService, Passanger passanger)
+    private static void UsersFlightMenuFunctionality(string choice, PassangerService passangerService, Passanger passanger,
+        List<Menu> usersFlightMenu)
     {
-        switch (choice)
+        bool exit = false;
+        while (!exit)
         {
-            case "1":
+            switch (choice)
             {
-                //prikaz svih letova
-                passangerService.listOfUsersFlights(passanger);
-                waitOnKeyPress();
-                break;
+                case "1":
+                {
+                    passangerService.ListOfFlights(passanger, PassangerService.writeUserFlights, passanger.flights);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "2":
+                {
+                    passangerService.ListOfFlights(passanger, PassangerService.writeGeneralFlights, passanger.availableFlights);
+                    passangerService.ChooseFlight(passanger);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "3":
+                {
+                    passangerService.FilterFlights(passanger, passangerService);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "4":
+                {
+                    passangerService.cancelFlight(passanger.flights, passanger);
+                    break;
+                }
+                case "5":
+                {
+                    exit = true;
+                    break;
+                }
+
             }
-            case "2":
+
+            if (!exit)
             {
-                //odabir leta
-                break;
-            }
-            case "3":
-            {
-                //Pretraživanje letova
-                break;
-            }
-            case "4":
-            {
-                //otkazivanje leta“
-                break;
-            }
-            case "5":
-            {
-                break;
+                Console.Clear();
+                Console.WriteLine($"Trenutni korisnik:  {passanger.name} {passanger.surname}");
+                WriteMenu(usersFlightMenu);
+                choice = CheckInput.CheckMenuInput(5);
             }
         }
+        
+            
     }
+        
 }

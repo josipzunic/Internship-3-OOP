@@ -11,18 +11,16 @@ public class Passanger : AirportPersonnel
     public string sex { get; set; }*/
     public string email { get; set; }
     public List<Flight> flights { get; set; }
+    public List<Flight> availableFlights { get; set; }
 
     public Passanger(string name, string surname, DateTime dateOfBirth, string sex, string email, string passwordMethod,
         List<Flight> flights) : base(name,  surname, dateOfBirth, sex)
     {
         id = _idCounter;
-        /*this.name = name;
-        this.surname = surname;
-        this.dateOfBirth = dateOfBirth;
-        this.sex = sex;*/
         this.email = email;
         this.flights = flights;
         if (passwordMethod == "hardCodedPassword") GeneratePasswordByInput();
+        availableFlights = new List<Flight>();
         _idCounter++;
     }
     

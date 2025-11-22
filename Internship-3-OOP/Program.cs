@@ -45,22 +45,22 @@ class Program
         
         var crew = new List<Crew>{pilot,  copilot, flightAttendant1, flightAttendant2};
 
-        var flights = new List<Flight>();
+        
         var flight = new Flight("floptropica", 
             new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0),
             1234, "hardCoded", crew);
         flight.SetTimeOfFlightInCode(new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0));
-        flights.Add(flight);
+        passangerService.flights.Add(flight);
         
         
         var passanger = new Passanger("ante", "antic", new DateTime(1111, 11, 11),
-            "M", "anteantic@gmail.com", "", flights);
+            "M", "anteantic@gmail.com", "", new List<Flight>());
         passanger.GeneratePasswordHardCoded("anteantic123!");
         passangerService.passangers.Add(passanger);
         
-        string input = CheckInput.CheckMenuInput();
+        string input = CheckInput.CheckMenuInput(usersMenu.Count);
         while (!exit)
         {
             switch (input)
@@ -69,7 +69,7 @@ class Program
                 {
                     Console.Clear();
                     Menu.WriteMenu(usersMenu);
-                    string choice = CheckInput.CheckMenuInput();
+                    string choice = CheckInput.CheckMenuInput(usersMenu.Count);
                     Menu.UsersMenuFunctionality(choice, passangerService, ref input,  usersFlightMenu);
                     break;
                 }
@@ -82,7 +82,7 @@ class Program
                 {
                     Console.Clear();
                     Menu.WriteMenu(mainMenu);
-                    input = CheckInput.CheckMenuInput();
+                    input = CheckInput.CheckMenuInput(mainMenu.Count);
                     break;
                 }
             }

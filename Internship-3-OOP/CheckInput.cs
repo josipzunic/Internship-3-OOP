@@ -4,18 +4,20 @@ namespace Internship_3_OOP;
 
 public class CheckInput
 {
-    public static string CheckMenuInput()
+    public static string CheckMenuInput(int maxAllowedNumber)
     {
         do
         {
-            Console.Write("Odaberite opciju na izborniku upisivanjem broja uz željenu opciju: ");
+            Console.Write("Odaberite opciju upisivanjem broja uz željenu opciju: ");
             string input = Console.ReadLine().Trim();
             if (string.IsNullOrEmpty(input))
                 Console.WriteLine("Ovo polje ne može biti prazno");
             else if (int.TryParse(input, out int result) && result < 0)
-                Console.WriteLine("Unos smije biti jedan od brojeva uz opcije na izborniku");
-            else if (!int.TryParse(input, out int result2))
-                Console.WriteLine("Unos smije biti jedan od brojeva uz opcije na izborniku");
+                Console.WriteLine("Unos smije biti samo jedan od brojeva uz opcije ");
+            else if (maxAllowedNumber < result)
+                Console.WriteLine("Unos smije biti samo jedan od brojeva uz opcije ");
+            else if(!int.TryParse(input, out result))
+                Console.WriteLine("Unos smije biti samo jedan od brojeva uz opcije ");
             else return input;
         } while (true);
     }
@@ -188,5 +190,91 @@ public class CheckInput
         Console.Write("Unesite lozinku: ");
         string password = WritePasswordToConsole();
         return password;
+    }
+
+    public static int checkFlightIdExistance(List<Flight> listOfFlights)
+    {
+        int id = -1;
+        do
+        {
+            Console.Write("Unesite id leta (Upisati povratak za izlaz): ");
+            string input = Console.ReadLine().Trim();
+            if (string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if (input == "povratak")
+                return id;
+            else if(!int.TryParse(input, out  id))
+                Console.WriteLine("Id mora biti broj");
+            else if (!listOfFlights.Any(flight => flight.id == id))
+            {
+                Console.WriteLine("Let s unesenim id-om ne postoji");
+                                  //"Postojeći letovi: ");
+                //passangerService.ListOfFlights(passanger, "else", listOfFlights);
+                Menu.waitOnKeyPress();
+            }
+            else return id;
+        } while (true);
+    }
+
+    public static string checkFlightNameExistance(List<Flight> listOfFlights)
+    {
+        string name = "";
+        do
+        {
+           Console.Write("Unesite ime leta (Upisati povratak za izlaz): ");
+           name =  Console.ReadLine().Trim();
+           if(string.IsNullOrEmpty(name))
+               Console.WriteLine("Ovo polje ne smije biti prazno");
+           else if (name == "povratak")
+               return name;
+           else if (!listOfFlights.Any(flight => flight.name == name))
+           {
+               Console.WriteLine("Let s unesenim imenom ne postoji");
+                                 //"Postojeći letovi:");
+               //passangerService.ListOfFlights(passanger, PassangerService.writeUserFlights, listOfFlights);
+               Menu.waitOnKeyPress();
+           }
+           
+           else return name; 
+        } while (true);
+        
+    }
+
+    public static int CheckIds(List<int> ids)
+    {
+        string input;
+        do
+        {
+            Console.Write("Unesite id (Upisati povratak za izlaz): ");
+            input =  Console.ReadLine().Trim();
+           if(string.IsNullOrEmpty(input))
+               Console.WriteLine("Ovo polje ne smije biti prazno");
+           else if (input == "povratak")
+               return -1;
+           else if(!int.TryParse(input, out int id))
+               Console.WriteLine("id mora biti broj");
+           else if(!ids.Contains(id))
+               Console.WriteLine("id nije sadržan u listi");
+           else return id;
+        } while (true);
+    }
+
+    public static string checkSeatingHierarchy()
+    {
+        string input;
+        do
+        {
+           Console.Write("Dostupni razredi: business, economy, first class\n" +
+                         "Unesite odabir (Upisati povratak za izlaz): ");
+           input = Console.ReadLine().Trim();
+           input = input.Replace(" ", "");
+           if(string.IsNullOrEmpty(input))
+               Console.WriteLine("Ovo polje ne smije biti prazno");
+           else if (input == "povratak")
+               return "";
+           else if(!Enum.TryParse(input, true, out CabinType result))
+               Console.WriteLine();
+           else return input;
+        } while (true);
     }
 }

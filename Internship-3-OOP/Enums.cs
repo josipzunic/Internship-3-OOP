@@ -7,3 +7,10 @@ public enum Positions
     stjuardesa,
     stjuard,
 }
+
+public enum CabinType
+{
+    economy,
+    firstClass,
+    business,
+}
