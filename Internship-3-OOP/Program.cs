@@ -49,32 +49,73 @@ class Program
             new Menu("Povratak"),
         };
 
+        var crewMenu = new List<Menu>()
+        {
+            new Menu("Prikaz svih posada"),
+            new Menu("Kreiranje nove posade"),
+            new Menu("Dodavanje osobe"),
+            new Menu("Povratak"),
+        };
+
         Menu.WriteMenu(mainMenu);
         bool exit = false;
         var passangerService = new PassangerService();
 
-        var pilot = new Crew("mate", "matic", new DateTime(2002, 04, 12),
+        var pilot1 = new CrewMember("mate", "matic", new DateTime(2002, 04, 12),
             "M", Positions.pilot.ToString());
-        var copilot = new Crew("maria", "maric", new DateTime(2002, 07, 09),
+        var copilot1 = new CrewMember("maria", "maric", new DateTime(2002, 07, 09),
             "F", Positions.kopilot.ToString());
-        var flightAttendant1 = new Crew("ivo", "ivic",  new DateTime(2002, 12, 25),
+        var flightAttendant1 = new CrewMember("ivo", "ivic",  new DateTime(2002, 12, 25),
             "M",  Positions.stjuard.ToString());
-        var flightAttendant2 = new Crew("rajka", "matovilac", new DateTime(2001, 11, 05),
+        var flightAttendant2 = new CrewMember("rajka", "matovilac", new DateTime(2001, 11, 05),
             "F",   Positions.stjuardesa.ToString());
         
-        var crew = new List<Crew>{pilot,  copilot, flightAttendant1, flightAttendant2};
+        var pilot2 = new CrewMember("dino", "dinic", new DateTime(2002, 04, 12),
+            "M", Positions.pilot.ToString());
+        var copilot2 = new CrewMember("ivan", "ivanic", new DateTime(2002, 07, 09),
+            "F", Positions.kopilot.ToString());
+        var flightAttendant3 = new CrewMember("matko", "matic",  new DateTime(2002, 12, 25),
+            "M",  Positions.stjuard.ToString());
+        var flightAttendant4 = new CrewMember("borna", "bornic", new DateTime(2001, 11, 05),
+            "F",   Positions.stjuardesa.ToString());
+        
+        var pilot3 = new CrewMember("mate", "kovac", new DateTime(2002, 04, 12),
+            "M", Positions.pilot.ToString());
+        var copilot4 = new CrewMember("dino", "stanic", new DateTime(2002, 07, 09),
+            "F", Positions.kopilot.ToString());
+        var flightAttendant5 = new CrewMember("marin", "begic",  new DateTime(2002, 12, 25),
+            "M",  Positions.stjuard.ToString());
+        var flightAttendant6 = new CrewMember("tino", "horvat", new DateTime(2001, 11, 05),
+            "F",   Positions.stjuardesa.ToString());
+        
+        
+        passangerService.availableCrewMembers.Add(pilot2);
+        passangerService.availableCrewMembers.Add(copilot2);
+        passangerService.availableCrewMembers.Add(flightAttendant3);
+        passangerService.availableCrewMembers.Add(flightAttendant4);
+        
+        var crewMembers1 = new List<CrewMember>{pilot1,  copilot1, flightAttendant1, flightAttendant2};
+        var crew1 = new Crew("prva postava", crewMembers1);
+        var crew2 = new Crew("druga postava", crewMembers1);
+        
         var plane = new Plane("Boeing-747", new DateTime(2012, 12, 25), 10, 
             10, 10);
+        var plane2 = new Plane("Airbus beluga", new DateTime(2012, 12, 25), 10, 10,
+            10);
 
         
-        var flight = new Flight("floptropica", 
+        var flight = new Flight("flight123", 
             new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0),
-            1234, "hardCoded", crew, plane);
+            1234, "hardCoded", crew2, plane);
         flight.SetTimeOfFlightInCode(new DateTime(1111, 11, 11, 12, 30, 0),
             new DateTime(1111, 11, 11, 15, 0, 0));
         passangerService.flights.Add(flight);
         passangerService.planes.Add(plane);
+        passangerService.planes.Add(plane2);
+        passangerService.crew.Add(crew1);
+        passangerService.crew.Add(crew2);
+        
         
         
         var passanger = new Passanger("ante", "antic", new DateTime(1111, 11, 11),
@@ -82,7 +123,7 @@ class Program
         passanger.GeneratePasswordHardCoded("anteantic123!");
         passangerService.passangers.Add(passanger);
         
-        string input = CheckInput.CheckMenuInput(usersMenu.Count);
+        string input = CheckInput.CheckMenuInput(mainMenu.Count);
         while (!exit)
         {
             switch (input)
@@ -109,6 +150,14 @@ class Program
                     Menu.WriteMenu(planeMenu);
                     string choice = CheckInput.CheckMenuInput(planeMenu.Count);
                     Menu.PlaneMenuFunctionality(choice, passangerService, ref input, planeMenu);
+                    break;
+                }
+                case "4":
+                {
+                    Console.Clear();
+                    Menu.WriteMenu(crewMenu);
+                    string choice =  CheckInput.CheckMenuInput(crewMenu.Count);
+                    Menu.CrewMenuFunctionality(choice, passangerService, ref input, crewMenu);
                     break;
                 }
                 case "5":

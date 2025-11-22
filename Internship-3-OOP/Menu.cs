@@ -31,7 +31,7 @@ public class Menu
         string input;
         do
         {
-            Console.Write($"Želite li stvarno {action} ovaj let ili avion (da/ne): ");
+            Console.Write($"Potvrđujete li radnju (da/ne): ");
             input =  Console.ReadLine();
             if(input == "da" || input == "ne") return  input;
             else Console.WriteLine("Molim unesite da ili ne");
@@ -228,5 +228,50 @@ public class Menu
             }
         }
     }
-        
+
+    public static void CrewMenuFunctionality(string choice, PassangerService passangerService, ref string input,
+        List<Menu> crewMenu)
+    {
+        bool exit = false;
+        while (!exit)
+        {
+            switch (choice)
+            {
+                case "1":
+                {
+                    passangerService.displayCrew(passangerService.crew);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "2":
+                {
+                    Crew newCrew = passangerService.createCrew();
+                    waitOnKeyPress();
+                    passangerService.AddCrewMemberToCrew(newCrew);
+                    waitOnKeyPress();
+                    break;
+                }
+                case "3":
+                {
+                    passangerService.createCrewMember();
+                    waitOnKeyPress();
+                    break;
+                }
+                case "4":
+                {
+                    exit = true;
+                    input = "6";
+                    break;
+                }
+                
+            }
+            if (!exit)
+            {
+                Console.Clear();
+                WriteMenu(crewMenu);
+                choice = CheckInput.CheckMenuInput(5);
+            }
+        }
+    }
+
 }

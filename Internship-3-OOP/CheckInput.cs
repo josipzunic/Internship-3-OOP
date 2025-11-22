@@ -288,12 +288,10 @@ public class CheckInput
         string input;
         do
         {
-            Console.Write("Unesite id (Upisati povratak za izlaz): ");
+            Console.Write("Unesite id: ");
             input =  Console.ReadLine().Trim();
            if(string.IsNullOrEmpty(input))
                Console.WriteLine("Ovo polje ne smije biti prazno");
-           else if (input == "povratak")
-               return -1;
            else if(!int.TryParse(input, out int id))
                Console.WriteLine("id mora biti broj");
            else if(!ids.Contains(id))
@@ -326,7 +324,7 @@ public class CheckInput
         string input;
         do
         {
-            Console.Write("Unesite ime leta ili aviona:  ");
+            Console.Write("Unesite ime leta, aviona ili posade:  ");
             input = Console.ReadLine().Trim();
             if(string.IsNullOrEmpty(input))
                 Console.WriteLine("Ovo polje ne smije biti prazno");
@@ -368,4 +366,38 @@ public class CheckInput
             
         } while (true);
     }
+    
+    public static string CheckPositionInput()
+    {
+        string input;
+        do
+        {
+            Console.Write("Dostupne pozicije: pilot, kopilot, stjuardera, stjuard\n" +
+                          "Odaberite podatak koji želite unijeti: ");
+            input = Console.ReadLine().Trim();
+            if(string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if(!Enum.TryParse(input, true, out Positions result))
+                Console.WriteLine("Unesite jedan od ponuđenih podataka");
+            else return result.ToString();
+            
+        } while (true);
+    }
+
+    public static string CheckCrewNameExistance(List<Crew> crewList)
+    {
+        string input;
+        do
+        {
+            Console.Write("Unesite ime posade u koju želite promijeniti: ");
+            input = Console.ReadLine().Trim();
+            if(string.IsNullOrEmpty(input))
+                Console.WriteLine("Ovo polje ne smije biti prazno");
+            else if(!crewList.Any(crew => crew.crewName == input))
+                Console.WriteLine("Posada s tim imenom ne postoji");
+            else return input;
+
+        } while (true);
+    }
+    
 }

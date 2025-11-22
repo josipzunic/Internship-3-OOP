@@ -5,6 +5,8 @@ public class PassangerService
     public List<Passanger> passangers = new();
     public List<Flight> flights = new();
     public List<Plane> planes = new();
+    public List<Crew> crew = new();
+    public List<CrewMember> availableCrewMembers = new();
     public const string passwordMethod = "input";
     public const string writeGeneralFlights = "general";
     public const string writeUserFlights = "userSpecific";
@@ -95,10 +97,24 @@ public class PassangerService
         return ids;
     }
     
-    public List<string> FetchPlaneNames(List<Plane> planeList)
+    /*public List<string> FetchPlaneNames(List<Plane> planeList)
     {
         var names = new List<string>();
         foreach (var plane in planeList) names.Add(plane.name);
+        return names;
+    }*/
+
+    public List<int> FetchCrewMemberIds(List<CrewMember> crewMemberList)
+    {
+        var ids = new List<int>();
+        foreach (var crewMember in crewMemberList) ids.Add(crewMember.id);
+        return ids;
+    }
+    
+    public List<string> FetchCrewByName(List<Crew> crewList)
+    {
+        var names = new List<string>();
+        foreach (var crew in crewList) names.Add(crew.crewName);
         return names;
     }
 
@@ -240,6 +256,7 @@ public class PassangerService
 
     public void AddFlight()
     {
+        Console.WriteLine("Unesite ime leta");
         string name = CheckInput.CheckFlightOrPlaneName();
         DateTime dateOfDeparture;
         DateTime dateOfArrival;
@@ -253,9 +270,18 @@ public class PassangerService
         } while (true);
         
         double mileage = CheckInput.CheckGeneralNumber("udaljenost");
+        var names =  FetchCrewByName(crew);
+        Console.WriteLine("Unesite ime posade");
+        var crewName = CheckInput.CheckFlightOrPlaneName();
+        var targetCrew = crew.Find(tempCrew => tempCrew.crewName == crewName);
+        Console.WriteLine("Unesite id željenog aviona");
+        var ids = fetchPlaneIds(planes);
+        var id = CheckInput.CheckIds(ids);
+        var targetPlane = planes.Find(plane => plane.id == id);
         
-        var flight = new Flight(name, dateOfDeparture, dateOfArrival, mileage, "input",new List<Crew>(),
-            planes[0]);
+        
+        var flight = new Flight(name, dateOfDeparture, dateOfArrival, mileage, "input", targetCrew,
+            targetPlane);
         var confirmation = Menu.confirmationMessage("dodati");
         if (confirmation == affirmation)
         {
@@ -273,22 +299,36 @@ public class PassangerService
         var ids = fetchFlightIds(flightList);
         var id = CheckInput.CheckIds(ids);
         var dataToChange = CheckInput.DataToChange();
-        DateTime newValue = new DateTime();
+        //DateTime newValue = new DateTime();
+        string newValue = "";
         if (dataToChange == Internship_3_OOP.EditFlight.dateOfDeparture.ToString())
-            newValue = CheckInput.checkDateOfDepartureAndArrival("polaska");
+            newValue = CheckInput.checkDateOfDepartureAndArrival("polaska").ToString();
         else if (dataToChange == Internship_3_OOP.EditFlight.dateOfArrival.ToString()) 
-            newValue = CheckInput.checkDateOfDepartureAndArrival("dolaska");
-       // else if(dataToChange == "crew") s tim cu se nosit kad napravim crew
-        
+            newValue = CheckInput.checkDateOfDepartureAndArrival("dolaska").ToString();
+       else if (dataToChange == Internship_3_OOP.EditFlight.crew.ToString())
+       {
+           Console.WriteLine("Unesite ime leta");
+           newValue = CheckInput.CheckFlightOrPlaneName();
+       }
+            
         
         var confirmation = Menu.confirmationMessage("izmijeniti");
         if (confirmation == affirmation)
         {
             var targetFlight = flightList.Find(flight => flight.id == id);
             if (dataToChange == Internship_3_OOP.EditFlight.dateOfDeparture.ToString()) 
-                targetFlight.dateOfDeparture = newValue; //provjeri opet da nije polazak posli dolaska
+                targetFlight.dateOfDeparture = DateTime.Parse(newValue); //provjeri opet da nije polazak posli dolaska
             else if (dataToChange == Internship_3_OOP.EditFlight.dateOfArrival.ToString())
-                targetFlight.dateOfArrival = newValue;
+                targetFlight.dateOfArrival = DateTime.Parse(newValue);
+            else if (dataToChange == Internship_3_OOP.EditFlight.crew.ToString())
+            {
+                Console.WriteLine("Dohvaćanje svih posada");
+                var names = FetchCrewByName(crew);
+                var crewName = CheckInput.CheckCrewNameExistance(crew);
+                var targetCrew = crew.Find(tempCrew => tempCrew.crewName == crewName);
+                targetCrew.crewName = newValue;
+
+            }
             Console.WriteLine("Podatak uspješno izmijenjen");
             Menu.waitOnKeyPress();
         }
@@ -421,4 +461,81 @@ public class PassangerService
             
         }
     }
+
+    public void displayCrew(List<Crew> crewList)
+    {
+        foreach (var crew in crewList)
+        {
+            Console.WriteLine($"{crew.crewName}: {crew.ReturnCrewMembers()}");
+            Console.WriteLine(crew.ReturnCrewMembersInfo());
+        }
+    }
+
+    public void createCrewMember()
+    {
+        string name = CheckInput.CheckGeneralInput("Unesite ime: ");
+        string surname = CheckInput.CheckGeneralInput("Uneite prezime: ");
+        DateTime dateOfBirth = CheckInput.checkDate("Unesite datum rođenja: ");
+        string sex = CheckInput.checkSexInput();
+        string position = CheckInput.CheckPositionInput();
+        
+        var confirmation = Menu.confirmationMessage("dodati");
+        if (confirmation == affirmation)
+        {
+            CrewMember crewMember = new CrewMember(name, surname, dateOfBirth, sex, position);
+            availableCrewMembers.Add(crewMember);
+            Console.WriteLine("Član posade dodan");
+        }
+        else if (confirmation == negation)
+            Console.WriteLine("Otkazivanja radnje. Povratak na izbornik");
+            
+        
+    }
+
+    public Crew createCrew()
+    {
+        string crewName = CheckInput.CheckFlightOrPlaneName();
+        Crew? newCrew = null;
+        var confirmation = Menu.confirmationMessage("dodati");
+        if (confirmation == affirmation)
+        {
+            newCrew = new Crew(crewName, new List<CrewMember>());
+            crew.Add(newCrew);
+            Console.WriteLine("Posada dodana");
+            
+        }
+        else if (confirmation == negation)
+            Console.WriteLine("Otkazivanje radnje. Povratak na izbornik");
+        
+        return newCrew;
+
+    }
+
+    public void AddCrewMemberToCrew(Crew crew)
+    {
+        string writeAvailableCrewMembers = "";
+        foreach (var crewMember in availableCrewMembers)
+        {
+            writeAvailableCrewMembers += $"{crewMember.id} - {crewMember.name} - {crewMember.surname} - {crewMember.position}\n";
+        }
+
+        Console.WriteLine(writeAvailableCrewMembers);
+        Console.WriteLine("Unesite id člana posade kojeg želite dodati");
+        var ids = FetchCrewMemberIds(availableCrewMembers);
+        for (int i = 0; i < 4; i++)
+        {
+            var id = CheckInput.CheckIds(ids);
+            var targetCrewMember = availableCrewMembers.Find(member => member.id == id);
+            var confirmation = Menu.confirmationMessage("dodati");
+            if (confirmation == affirmation)
+            {
+                crew.crewList.Add(targetCrewMember);
+                availableCrewMembers.Remove(targetCrewMember); 
+            }
+            else if(confirmation == negation)
+                Console.WriteLine("Otkazivanje radnje. Povratak na izbornik");
+        }
+        
+    }
+    
 }

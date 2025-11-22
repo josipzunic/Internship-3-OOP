@@ -9,11 +9,11 @@ public class Flight
     public DateTime dateOfDeparture { get; set; }
     public DateTime dateOfArrival { get; set; }
     public double mileage { get; set; }
-    public List<Crew> crew { get; set; }
+    public Crew crew { get; set; }
     public Plane plane { get; set; }
     
     public Flight(string name, DateTime dateOfDeparture, DateTime dateOfArrival, double mileage, string setTimeOfFlightMethod,
-        List<Crew> crew, Plane plane)
+        Crew crew, Plane plane)
     {
         id = _idCounter;
         this.name = name;
